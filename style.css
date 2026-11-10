@@ -1,0 +1,82 @@
+/* style.css: colors, fonts, and layout for the Trial Match Agent */
+/* Layout: two-pane clinical workbench — patient + settings on the left, agent results and trace on the right. */
+:root {
+  --bg: #F3F5F8; --panel: #FFFFFF; --fg: #18212F; --muted: #5B6676; --line: #DCE2EA;
+  --accent: #2C5B8F; --accent-soft: #E3ECF6; --ok: #1D7A4C; --ok-soft: #E1F2E8;
+  --warn: #9A6200; --warn-soft: #FBF0D9; --bad: #B03535; --bad-soft: #F8E3E3; --code: #EEF1F5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F141B; --panel: #161D27; --fg: #E4E9F0; --muted: #98A3B3; --line: #2A3442;
+  --accent: #7FB0E6; --accent-soft: #1D2B3C; --ok: #5CC28D; --ok-soft: #15291F;
+  --warn: #E5B055; --warn-soft: #2D2410; --bad: #EE8181; --bad-soft: #321A1C; --code: #1B2330; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0F141B; --panel: #161D27; --fg: #E4E9F0; --muted: #98A3B3; --line: #2A3442;
+  --accent: #7FB0E6; --accent-soft: #1D2B3C; --ok: #5CC28D; --ok-soft: #15291F;
+  --warn: #E5B055; --warn-soft: #2D2410; --bad: #EE8181; --bad-soft: #321A1C; --code: #1B2330; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 16px }
+header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px }
+h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; text-wrap: balance }
+.sub { color: var(--muted); margin: 2px 0 0 }
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chip { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 500 }
+.chip.warn { background: var(--warn-soft); color: var(--warn) }
+.grid { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 16px; align-items: start }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr) } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; min-width: 0 }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0; font-weight: 600 }
+label { font-weight: 500; font-size: 13px }
+textarea, input[type=number], select, input[type=text] { width: 100%; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
+textarea { min-height: 150px; resize: vertical }
+textarea:focus, input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+.examples { display: flex; flex-wrap: wrap; gap: 6px }
+button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); padding: 6px 12px }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--panel); font-weight: 600; padding: 10px 14px; width: 100% }
+button.small { font-size: 12px; padding: 4px 10px }
+button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent) }
+.settings { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+.settings .full { grid-column: 1 / -1 }
+.field { display: grid; gap: 4px; min-width: 0 }
+.hint { color: var(--muted); font-size: 12px }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px }
+@media (max-width: 640px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; min-width: 0 }
+.stat b { display: block; font-size: 20px; font-variant-numeric: tabular-nums }
+.stat span { color: var(--muted); font-size: 12px }
+.stat.save b { color: var(--ok) }
+.funnel { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-x: auto; white-space: nowrap }
+.questions { border-left: 3px solid var(--warn); background: var(--warn-soft); border-radius: 8px; padding: 12px 14px; display: grid; gap: 8px }
+.questions h3 { margin: 0; font-size: 14px }
+.q { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 8px; align-items: center }
+@media (max-width: 520px) { .q { grid-template-columns: minmax(0, 1fr) } }
+.trial { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); min-width: 0 }
+.trial > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center }
+.trial > summary::-webkit-details-marker { display: none }
+.rank { font-family: var(--mono); color: var(--muted); font-size: 12px; width: 22px }
+.ttl { font-weight: 600; min-width: 0 }
+.meta { color: var(--muted); font-size: 12px; font-family: var(--mono) }
+.pill { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap }
+.pill.ok { background: var(--ok-soft); color: var(--ok) } .pill.warn { background: var(--warn-soft); color: var(--warn) } .pill.bad { background: var(--bad-soft); color: var(--bad) }
+.body { padding: 0 14px 14px; display: grid; gap: 10px }
+.tablewrap { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; font-size: 13px }
+th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line) }
+td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top }
+td.ev { color: var(--muted); font-size: 12px }
+.lab { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap }
+.lab.ok { background: var(--ok-soft); color: var(--ok) } .lab.bad { background: var(--bad-soft); color: var(--bad) } .lab.warn { background: var(--warn-soft); color: var(--warn) } .lab.skip { background: var(--code); color: var(--muted) }
+.tier { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap }
+.decide { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.decision { font-size: 12px; font-weight: 600 }
+.trace { font-family: var(--mono); font-size: 12px; background: var(--code); border-radius: 8px; padding: 12px; max-height: 420px; overflow: auto; display: grid; gap: 10px }
+.step b { color: var(--accent); font-weight: 500 }
+.step div { white-space: pre-wrap; overflow-wrap: anywhere }
+.list { display: grid; gap: 10px }
+.empty { color: var(--muted); padding: 10px 0 }
+footer { color: var(--muted); font-size: 12px; max-width: 70ch }
+.notice { font-size: 12px; color: var(--warn) }
+@media (prefers-reduced-motion: no-preference) { .trial { transition: border-color .2s } .trial:hover { border-color: var(--accent) } }
