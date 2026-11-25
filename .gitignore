@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/trialmatch.db
+backend/data/*_patients.json
+TrialGPT/
+backend/TrialGPT/
+node_modules/
+frontend/dist/
+results/
+.env
