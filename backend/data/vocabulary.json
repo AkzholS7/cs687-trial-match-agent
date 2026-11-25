@@ -1,0 +1,117 @@
+{
+ "type 2 diabetes": [
+  "type 2 diabetes",
+  "t2dm",
+  "type ii diabetes"
+ ],
+ "type 1 diabetes": [
+  "type 1 diabetes",
+  "t1dm"
+ ],
+ "prediabetes": [
+  "prediabetes"
+ ],
+ "obesity": [
+  "obesity"
+ ],
+ "chronic kidney disease": [
+  "chronic kidney disease",
+  "ckd"
+ ],
+ "dialysis": [
+  "dialysis"
+ ],
+ "kidney transplant": [
+  "kidney transplant"
+ ],
+ "pancreatitis": [
+  "pancreatitis"
+ ],
+ "heart failure": [
+  "heart failure",
+  "hfref",
+  "hfpef"
+ ],
+ "myocardial infarction": [
+  "myocardial infarction",
+  "heart attack"
+ ],
+ "hospitalized for heart failure": [
+  "hospitalized for heart failure",
+  "hospitalization for heart failure",
+  "admitted for heart failure"
+ ],
+ "atrial fibrillation": [
+  "atrial fibrillation"
+ ],
+ "hypertension": [
+  "hypertension",
+  "high blood pressure"
+ ],
+ "non-small cell lung cancer": [
+  "non-small cell lung cancer",
+  "nsclc"
+ ],
+ "stage iv": [
+  "stage iv",
+  "stage 4",
+  "metastatic"
+ ],
+ "egfr mutation": [
+  "egfr mutation",
+  "egfr-mutant",
+  "egfr mutant"
+ ],
+ "alk rearrangement": [
+  "alk rearrangement",
+  "alk-positive",
+  "alk positive"
+ ],
+ "brain metastases": [
+  "brain metastases",
+  "brain metastasis"
+ ],
+ "interstitial lung disease": [
+  "interstitial lung disease"
+ ],
+ "breast cancer": [
+  "breast cancer"
+ ],
+ "hormone receptor-positive": [
+  "hormone receptor-positive",
+  "hormone receptor positive",
+  "hr-positive"
+ ],
+ "asthma": [
+  "asthma"
+ ],
+ "copd": [
+  "copd",
+  "chronic obstructive pulmonary disease"
+ ],
+ "major depressive disorder": [
+  "major depressive disorder",
+  "depression"
+ ],
+ "dementia": [
+  "dementia",
+  "alzheimer"
+ ],
+ "pregnancy": [
+  "pregnancy",
+  "pregnant",
+  "breastfeeding"
+ ],
+ "metformin": [
+  "metformin"
+ ],
+ "insulin": [
+  "insulin"
+ ],
+ "osimertinib": [
+  "osimertinib"
+ ],
+ "smartphone access": [
+  "smartphone"
+ ]
+}

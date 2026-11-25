@@ -1,0 +1,17 @@
+[
+ {
+  "id": "ex1",
+  "label": "Diabetes patient",
+  "summary": "62-year-old woman with type 2 diabetes for 8 years. HbA1c 8.4% on metformin 1000 mg twice daily. BMI 33. eGFR 75. No history of pancreatitis or heart failure. Not on insulin. Lives in Seattle, WA."
+ },
+ {
+  "id": "ex2",
+  "label": "Lung cancer patient",
+  "summary": "55-year-old man with stage IV non-small cell lung cancer (adenocarcinoma), EGFR mutation positive. Disease progressed on osimertinib. ECOG 1. No brain metastases. Lives in Portland, OR."
+ },
+ {
+  "id": "ex3",
+  "label": "Heart failure patient",
+  "summary": "70-year-old man with heart failure with reduced ejection fraction, EF 30%, NYHA class III. History of type 2 diabetes (HbA1c 7.2%, on metformin) and hypertension. Not on insulin. Lives in Seattle, WA."
+ }
+]

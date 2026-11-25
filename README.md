@@ -1,51 +1,108 @@
 # Trial Match Agent
 
-Prototype of an agentic, cost-aware hybrid system for clinical trial matching.
-CS 687 Computer Science Capstone, City University of Seattle, Fall 2026. Author: Akzhol Suborov.
+**An Agentic, Cost-Aware Hybrid System for Clinical Trial Matching: Combining Rule-Based Filtering, Hybrid Retrieval, and Large Language Models**
 
-The agent filters trials by rules, ranks them with hybrid search, checks each eligibility
-criterion with free rules and a low-cost model, escalates only unsure criteria to a stronger
-model, and asks the clinician when a fact is missing. A clinician makes every final decision.
+CS 687 Capstone · City University of Seattle · Akzhol Suborov · Advisor: Prof. Sivakumar Visweswaran
 
-![Architecture](docs/architecture.png)
+A full-stack web app that matches a patient summary to clinical trials. An agent filters trials, ranks them with hybrid retrieval, checks each eligibility criterion with free rules first and a low-cost model next, escalates only unsure criteria to a stronger model within a budget, stops early when a trial is ruled out, and asks the clinician when facts are missing. The clinician makes the final decision.
 
-## Files
+## Stack
 
-| File | What it does |
-|---|---|
-| `index.html` | Page layout; loads the style and scripts |
-| `style.css` | Colors, fonts, and layout |
-| `js/data.js` | Sample trials, example patients, medical vocabulary |
-| `js/facts.js` | Reads age, sex, location, conditions, and labs from the patient text |
-| `js/retrieval.js` | Hybrid retriever: BM25 + TF-IDF vectors with convex fusion |
-| `js/checker.js` | Rule checks, low-cost check (tier 1), escalation (tier 2), clinician questions |
-| `js/agent.js` | Orchestrator: filter, retrieve, check, early stopping, budget, trace |
-| `js/app.js` | User interface: results, questions, decisions, trace |
+| Layer | Technology | Folder |
+|---|---|---|
+| Frontend | React 19 + Vite | `frontend/` |
+| Backend | Python 3.10+, Flask REST API | `backend/` |
+| Database | SQLite (trials, saved runs, clinician decisions) | `backend/db.py` |
+| Agent | Python package (filter, retrieval, checker, orchestrator) | `backend/agent/` |
+| Evaluation | Benchmark script on public data | `evaluation/` |
 
-## Run it
-
-In GitHub Codespaces or any terminal, from this folder:
+## Architecture
 
 ```
-python3 -m http.server 8000
+React UI (Match · History · Trials · Benchmark)
+        │  JSON over HTTP (/api/...)
+Flask REST API (app.py) ── SQLite (trials, runs, decisions)
+        │
+Orchestrator agent (agent/orchestrator.py)
+  1. extract_facts     agent/facts.py      age, sex, location, conditions, labs, negation
+  2. trial_filter      orchestrator.py     status, age, sex, location (no model cost)
+  3. hybrid_retrieve   agent/retrieval.py  BM25 + TF-IDF, convex fusion with weight α
+  4. check_criteria    agent/checker.py    rule check → low-cost check → escalation (budget), early stopping
+  5. ask_clinician     agent/checker.py    questions for missing facts
+  6. finish            trace + cost estimate
 ```
 
-Then open the forwarded port 8000 in the browser. Or simply open `index.html` in a browser.
+## Run it in GitHub Codespaces
 
-## Status
+The repo includes `.devcontainer/`, so a new Codespace installs everything. Otherwise run the install lines below.
 
-- Working prototype of the agent loop with a clinician view and an agent trace
-- Uses 15 synthetic sample trials (IDs start with `DEMO`) and example patients, not real data
-- A rule-based checker stands in for the low-cost and strong LLMs; costs are estimates
-- Next: TREC 2021/2022 and SIGIR 2016 data, ClinicalTrials.gov API, real LLMs, evaluation
+**Terminal 1: backend**
+```bash
+cd backend
+pip install -r requirements.txt
+python app.py                  # API on http://localhost:5000
+```
 
-## How this was built
+**Terminal 2: frontend**
+```bash
+cd frontend
+npm install
+npm run dev                    # app on http://localhost:5173 (calls /api on port 5000)
+```
+Open the forwarded port **5173**.
 
-The system design comes from my capstone papers (Weeks 3 to 5). This first prototype was built
-with the help of an AI coding assistant (Claude); I reviewed, ran, and modified the code, and I
-am extending it in the following sprints.
+**One server instead of two:** run `npm run build` in `frontend/`, then `python app.py` serves the built app and the API on port 5000.
 
-## Data and ethics
+### Load real benchmark trials (optional)
+```bash
+cd backend
+git clone https://github.com/ncbi-nlp/TrialGPT
+python load_benchmark.py TrialGPT/dataset     # adds the SIGIR collection: 3,621 trials + example patients
+```
+Restart `python app.py`, then choose "Benchmark: SIGIR" on the Match page.
 
-Only public, de-identified, or synthetic data is used. The system only suggests matches;
-clinicians make all eligibility decisions.
+### Use real language models (optional, experimental)
+```bash
+export ANTHROPIC_API_KEY=...   # then choose "LLM" as the checker on the Match page
+```
+Without a key, a rule-based checker stands in for both model tiers, so the app runs fully offline.
+
+## Tests
+```bash
+cd backend
+python -m pytest               # 30 tests: agent tools, orchestrator, API, database
+```
+
+## REST API
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/api/health` | Status and trial collections |
+| GET | `/api/examples` | Example patients |
+| GET | `/api/trials?collection=&q=&offset=&limit=` | Search trials |
+| GET | `/api/trials/<collection>/<id>` | One trial |
+| POST | `/api/match` | Run the agent `{summary, collection, settings, answers, save}` |
+| GET | `/api/runs` · `/api/runs/<id>` | Saved runs |
+| DELETE | `/api/runs/<id>` | Delete a run (and its decisions) |
+| PUT / DELETE | `/api/runs/<id>/decisions/<trial_id>` | Save or clear an accept/reject decision |
+| GET | `/api/stats` | Totals across runs |
+| GET | `/api/benchmark` | Benchmark results for the charts |
+
+## Benchmark results (retrieval stage)
+
+`evaluation/run_baselines.py` uses the public TrialGPT dataset (Jin et al., 2024). On SIGIR full retrieval, the hybrid score reaches NDCG@10 0.149 at α = 0.4, compared with 0.130 for BM25 alone and 0.129 for TF-IDF alone. When re-ranking candidate trials that are already similar to the patient, similarity alone does worse than random order. In other words, similarity is not eligibility, which is why the agent checks each criterion.
+
+## Data and safety
+
+- `DEMO-xxx` trials and example patients are synthetic. Benchmark data is public and de-identified.
+- Do not enter real patient data. The app is a research prototype, not a medical device.
+- The agent only suggests matches. The clinician decides.
+
+## Acknowledgment
+
+I built this project with help from an AI assistant (Claude, Anthropic) for code generation and review. I reviewed, ran, and tested the code, and I can explain every part of it.
+
+## References
+
+- Jin, Q., Wang, Z., Floudas, C. S., et al. (2024). Matching patients to clinical trials with large language models. *Nature Communications, 15*, 9074. https://doi.org/10.1038/s41467-024-53081-z
+- Yao, S., Zhao, J., Yu, D., et al. (2023). ReAct: Synergizing reasoning and acting in language models. *ICLR 2023*. https://arxiv.org/abs/2210.03629
